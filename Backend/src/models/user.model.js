@@ -2,6 +2,7 @@ import mongoose,{Schema} from "mongoose";
 import config from "../database/config.js";
 import crypto from 'crypto'
 import jwt from 'jsonwebtoken'
+import {CompanyRoleEnum , AvailableCompanyRoles , UserRoleEnum , AvailableUserRoles} from "../utils/constant.js"
 
 
 const userSchema = new Schema({
@@ -11,9 +12,15 @@ const userSchema = new Schema({
         minLength:3,
         maxLength:10
     },
-    role:{
+         role: {
+        type: String,
+        enum: AvailableCompanyRoles,
+        default: CompanyRoleEnum.MEMBER,
+        required: true,
+    },
+      projectrole:{
         type:String,
-        enum:["Admin","ProjectAdmin","Member"],
+        enum:["ProjectAdmin","Member"],
         default:"Member",
     },
     email:{

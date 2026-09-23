@@ -1,6 +1,9 @@
 import { isLoggedIn } from "../middleware/auth.middleware.js"
 import Project from "../models/project.model.js"
 
+
+//Create-Project API completed
+
 const createProject = async(req,res)=>{
     const {title,description} = req.body
 
@@ -25,10 +28,12 @@ const createProject = async(req,res)=>{
 
 }
 
+
+//getAll Projects API completed
 const getProject = async(req,res)=>{
 
-    const project = await Project.find()
-    console.log(project)
+    const project = await Project.find().populate("createdBy","userName")
+
     
     if(!project){
          return res.status(400).json({
@@ -38,42 +43,19 @@ const getProject = async(req,res)=>{
 
     }
 
-    console.log(project)
-    project.map((val)=>{
-    
-       const data=`Project Name - ${val.title}`
-       console.log(data)
-
-       res.status(201).json({
+      res.status(201).json({
             success:true,
-            data:{
-                ProjectName : data
-            },
-            //message:"All projects"
-        })
         
-    })
-
-    // const allProjects = data
-
-    //   res.status(201).json({
-    //         success:true,
-    //         data:{
-    //             ProjectName : allProjects
-    //         },
-            //message:"All projects"
-      //  })
+            message:"All projects",
+            project
+       })
 
     console.log(project)
-
-    // res.status(201).json({
-    //     success:true,
-    //     message:"All projects",
-        
-    // })
 
 }
 
+
+//getProjectById API completed
 
 const getOneProject= async(req,res)=>{
 
@@ -98,12 +80,72 @@ const getOneProject= async(req,res)=>{
     })
 }
 
-// const deleteProject = async(req,res)=>{
 
-// }
+// DeleteProject API completed
+
+
+ const deleteProject = async(req,res)=>{
+
+    const deleteId = req.params.id
+
+    const project = await Project.findByIdAndDelete(deleteId)
+
+        if(!project){
+        return res.status(401).json({  
+             success:false,
+            message:"Project NOt found"
+        
+        }) 
+    }
+
+    res.status(200).json({
+        success:true,
+        message:"Project Deleted Successfully"
+    })
+}
+
+
+
+const updateProject = async(req,res)=>{
+
+    const id=req.params.id
+    const {title,description} = req.body
+
+
+    if(!title || !description){
+         return res.status(401).json({  
+             success:false,
+            message:"Required fields"
+        
+        })
+    }
+
+    const updateProject = await Project.findByIdAndUpdate(
+        id,
+        {
+            title,
+            description
+        },
+        {
+            returnDocument:"after"
+        }
+    )
+
+    res.status(201).json({
+        success:true,
+        message:"Project updated successfulyy",
+        data:{
+            Project:updateProject
+        }
+    })
+
+
+}
 
 export {
     createProject,
     getProject,
-    getOneProject
+    getOneProject,
+    updateProject,
+    deleteProject
 }

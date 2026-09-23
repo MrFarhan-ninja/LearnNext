@@ -13,7 +13,7 @@ const projectSchema = new Schema({
     },
     createdBy:{
         type:Schema.Types.ObjectId,
-        ref:"User"
+        ref:"user"
     },
     createdAt:{
         type:Date

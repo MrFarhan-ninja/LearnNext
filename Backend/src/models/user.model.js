@@ -11,6 +11,11 @@ const userSchema = new Schema({
         minLength:3,
         maxLength:10
     },
+    role:{
+        type:String,
+        enum:["Admin","ProjectAdmin","Member"],
+        default:"Member",
+    },
     email:{
         type:String,
         required:true,

@@ -1,5 +1,6 @@
-import { isLoggedIn } from "../middleware/auth.middleware.js"
+
 import Project from "../models/project.model.js"
+import User from "../models/user.model.js"
 
 
 //Create-Project API completed
@@ -88,9 +89,29 @@ const getOneProject= async(req,res)=>{
 
     const deleteId = req.params.id
 
-    const project = await Project.findByIdAndDelete(deleteId)
 
-        if(!project){
+    const id = req.user.id
+
+    const user = await User.findOne({id})
+
+    if(!user){
+           return res.status(401).json({  
+             success:false,
+            message:"User not found"
+        
+        }) 
+    }
+
+    if(!user.role === "ADMIN"){
+        return res.status(404).json({
+            success:false,
+            message:"You are not authorized to delete project"
+        })
+    }
+
+    const deleteproject = await Project.findByIdAndDelete(deleteId)
+
+        if(!deleteprojectproject){
         return res.status(401).json({  
              success:false,
             message:"Project NOt found"
@@ -100,7 +121,10 @@ const getOneProject= async(req,res)=>{
 
     res.status(200).json({
         success:true,
-        message:"Project Deleted Successfully"
+        message:"Project Deleted Successfully",
+        data:{
+            project:deleteproject
+        }
     })
 }
 
@@ -119,6 +143,30 @@ const updateProject = async(req,res)=>{
         
         })
     }
+
+
+    const userid= req.user.id
+
+    const user = await User.findOne({userid})
+
+    if(!user){
+           return res.status(401).json({  
+             success:false,
+            message:"User not found"
+        
+        }) 
+    }
+
+    if(!user.role === "ADMIN"){
+        return res.status(404).json({
+            success:false,
+            message:"You are not authorized to delete project"
+        })
+    }
+
+
+
+
 
     const updateProject = await Project.findByIdAndUpdate(
         id,

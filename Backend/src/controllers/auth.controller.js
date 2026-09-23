@@ -189,9 +189,9 @@ const newRefreshToken = async(req,res)=>{
 
 const login = async (req,res)=>{
     const {email,password } = req.body
-    const accessToken = req.headers.authorization?.split(" ")[1]
+    const headeraccessToken = req.headers.authorization?.split(" ")[1]
 
-    if (!accessToken) {
+    if (!headeraccessToken) {
     return res.status(401).json({ message: "Access token is required" });
 }
     // if(!isEmailVerified){
@@ -208,7 +208,7 @@ const login = async (req,res)=>{
         })
     }
 
-    const decoded = verifyAccessToken(accessToken)
+    const decoded = verifyAccessToken(headeraccessToken)
 
     console.log(decoded)
 
@@ -220,6 +220,7 @@ const login = async (req,res)=>{
             message:"Your access token is invalid"
         })
     }
+
 
     
 
@@ -248,12 +249,26 @@ const login = async (req,res)=>{
         })
     }
 
+
+    const accessToken=user.generateAccessToken({userId:user._id})
+    //console.log(accessToken)
+
+    const refreshToken=user.generateRefreshToken({userId:user._id})
+
+       const cookieoptions = {
+        httpOnly:true,
+    
+    }
+    res.cookie("RefreshToken",refreshToken,cookieoptions)
+
     user.isLoggedIn = true
+    user.refreshToken = refreshToken
     await user.save()
 
     res.status(200).json({
     success:true,
-    message:"User login successfully"
+    message:"User login successfully",
+    accessToken
 })
 
 }

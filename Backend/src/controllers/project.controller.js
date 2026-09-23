@@ -25,6 +25,85 @@ const createProject = async(req,res)=>{
 
 }
 
+const getProject = async(req,res)=>{
+
+    const project = await Project.find()
+    console.log(project)
+    
+    if(!project){
+         return res.status(400).json({
+            success:false,
+            message:"No Projects were found"
+        })
+
+    }
+
+    console.log(project)
+    project.map((val)=>{
+    
+       const data=`Project Name - ${val.title}`
+       console.log(data)
+
+       res.status(201).json({
+            success:true,
+            data:{
+                ProjectName : data
+            },
+            //message:"All projects"
+        })
+        
+    })
+
+    // const allProjects = data
+
+    //   res.status(201).json({
+    //         success:true,
+    //         data:{
+    //             ProjectName : allProjects
+    //         },
+            //message:"All projects"
+      //  })
+
+    console.log(project)
+
+    // res.status(201).json({
+    //     success:true,
+    //     message:"All projects",
+        
+    // })
+
+}
+
+
+const getOneProject= async(req,res)=>{
+
+    const getOneProject= req.params
+    //console.log(id)
+    const project = await Project.findById(getOneProject.id)
+
+
+    if(!project){
+        return res.status(401).json({  
+             success:false,
+            message:"Project NOt found"
+        
+        }) 
+    }
+
+    res.status(200).json({
+        success:true,
+        data:{
+            ProjectName:project.title
+        }
+    })
+}
+
+// const deleteProject = async(req,res)=>{
+
+// }
+
 export {
-    createProject
+    createProject,
+    getProject,
+    getOneProject
 }

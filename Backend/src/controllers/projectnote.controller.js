@@ -122,6 +122,7 @@ res.status(200).json({
 export {
     createNote,
     getNoteofProject,
+    deleteNote,
     
 }
 

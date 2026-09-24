@@ -32,8 +32,8 @@ const createNote = async(req,res)=>{
             message: "User is required!",
         });
     }
-    
-    const project = await Project.findOne({projectReference})
+    //console.log(projectReference)
+    const project = await Project.findOne({title:projectReference})
 
     if(!project){
         return res.status(400).json({
@@ -49,8 +49,9 @@ const createNote = async(req,res)=>{
     await user.save()
 
     const projectnotes = await projectNotesModel.create({
-        notes,projectReference,createdBy:req.user.id
+        notes,projectReference:project._id,createdBy:userid
     })
+    console.log(projectnotes)
 
 
     res.status(201).json({
@@ -63,10 +64,9 @@ const createNote = async(req,res)=>{
 })
 
 
-    
 }
 
-const getNoteofProject = async(req,res)=>{
+const getSpecificNote = async(req,res)=>{
     const noteid = req.params.id
 
     const notes = await projectNotesModel.findById(noteid)
@@ -94,7 +94,7 @@ const deleteNote = async(req,res)=>{
 
 const deleteid = req.params.id
 
-const deleteNote = await projectNotesModel.findById(deleteid)
+const deleteNote = await projectNotesModel.findByIdAndDelete(deleteid)
 
 if(!deleteNote){
     return res.status(404).json({
@@ -113,41 +113,69 @@ res.status(200).json({
 
 }
 
-// const updateNote = async(req,res)=>{
-//     const id = req.params.id
 
-//     const updateNote = await 
-// }
+const updateProjectNote = async (req, res) => {
+    const { id } = req.params;
+    const { notes } = req.body;
+
+    const updatedProject = await Project.findByIdAndUpdate(
+        id,
+        {
+            notes
+        },
+        {
+            new: true
+        }
+    );
+
+    if (!updatedProject) {
+        return res.status(404).json({
+            success: false,
+            message: "Project not found"
+        });
+    }
+
+    return res.status(200).json({
+        success: true,
+        message: "Project updated successfully",
+        data: updatedProject
+    });
+};
+
+
+
+const getProjectNotes = async (req, res) => {
+
+    const { id } = req.params;
+
+    const notes = await projectNotesModel.find({
+        projectReference: id
+    });
+
+    if (notes.length === 0) {
+        return res.status(404).json({
+            success: false,
+            message: "No notes found for this project"
+        });
+    }
+
+    return res.status(200).json({
+        success: true,
+        message: "Project notes fetched successfully",
+        data: {
+            notes
+        }
+    });
+};
 
 export {
     createNote,
-    getNoteofProject,
+    getSpecificNote,
     deleteNote,
+    updateProjectNote,
+    getProjectNotes
     
 }
 
 
 
-// const projectNotesSchema = new Schema(
-//     {
-//         notes: {
-//             type: String,
-//             require: true,
-//         },
-//         projectReference: {
-//             type: Schema.Types.ObjectId,
-//             ref: "projectModel",
-//         },
-//         createdBy: {
-//             type: Schema.Types.ObjectId,
-//             ref: "userModel",
-//         },
-//         createdOn: {
-//             type: Date,
-//             require: true,
-//         },
-//     },
-//     {
-//         timestamps: true,
-//     }
-// );

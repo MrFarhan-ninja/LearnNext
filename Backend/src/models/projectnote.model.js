@@ -10,6 +10,10 @@ const projectNotesSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: "projectModel",
         },
+        isSolved:{
+            type:Boolean,
+            default:false
+        },
         createdBy: {
             type: Schema.Types.ObjectId,
             ref: "userModel",

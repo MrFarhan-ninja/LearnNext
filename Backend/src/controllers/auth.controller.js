@@ -181,7 +181,10 @@ const newRefreshToken = async(req,res)=>{
    
     res.status(200).json({
         success:true,
-        message:"New refresh token is generated successfully"
+        message:"New refresh token is generated successfully",
+        data:{
+            newaccessToken
+        }
     })
 
 

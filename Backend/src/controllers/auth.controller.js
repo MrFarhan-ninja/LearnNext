@@ -518,9 +518,10 @@ const changePassword = async(req,res)=>{
 
 const getMe = async (req,res)=>{
   try{
-      const decode = req.user
+      const decode = req.user.id
+      console.log(decode)
     
-    const user = await userModel.findById(decode.id).select('-hashedPassword')
+    const user = await userModel.findById(decode).select('-hashedPassword')
 
     if(!user){
         return res.status(401).json({

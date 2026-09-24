@@ -17,6 +17,8 @@ const projectMemberSchema = new Schema({
         default : UserRoleEnum.MEMBER
     }
 
+},{
+    timestamps:true
 })
 
 

@@ -4,6 +4,7 @@ import cookieparser from 'cookie-parser'
 import projectRoute from './routes/project.route.js'
 import projectMember from './routes/projectmember.route.js'
 import projectnoteroute from './routes/projectnote.route.js'
+import taskRoute from './routes/task.route.js'
 const app = express()
 
 app.use(express.json())
@@ -18,4 +19,7 @@ app.use("/api/v1/user",projectRoute)
 app.use("/api/v1/user",projectMember)
 
 app.use("/api/v1/user",projectnoteroute)
+
+
+app.use("/api/v1/user",taskRoute)
 export default app

@@ -9,6 +9,7 @@ const isLoggedIn = async (req,res,next)=>{
     //   const accessToken = req.headers.authorization.split(" ")[1]
 
     const authHeader = req.headers.authorization
+    console.log(authHeader)
     //console.log(authHeader)
 
       if (!authHeader || !authHeader.startsWith("Bearer ")) {

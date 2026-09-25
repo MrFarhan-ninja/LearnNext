@@ -95,20 +95,161 @@ const createTask = async(req,res)=>{
         message:"Task created Successfully"
     })
 
+}
+
+const getTaskByProject = async(req,res)=>{
+
+    const id = req.params.projectid
+     if(!id){
+       return res.status(404).json({ 
+        success:false,
+        message:"Project Id not found for this task"
+    })
+  }
+
+
+//     const project = await Project.find)
+   
+//     if(!project){
+//        return res.status(404).json({
+//          success:false,
+//         message:"Project not found"
+//     })
+//   }
+
+
+    const tasks = await Task.find({project:id})
+    console.log(tasks)
+
+    if(!tasks){
+       return res.status(404).json({ 
+        success:false,
+        message:"Tasks for this project not found"
+    })
+  }
+
+  res.status(201).json({
+    success:true,
+    message:"Project tasks",
+    data:{
+        tasks
+    }
+  })
+}
+
+
+const deleteTask = async(req,res)=>{
+    const id = req.params.taskid
+
+     if(!id){
+       return res.status(404).json({ 
+        success:false,
+        message:"Project Id not found for this task"
+    })
+  }
+
+    const deleteTask = await Task.findByIdAndDelete(id)
+
+     if(!deleteTask){
+       return res.status(404).json({ 
+        success:false,
+        message:"Tasks for this project not found"
+    })
+  }
+
+  res.status(200).json({
+    success:true,
+    message:"Deleted Project Successfully",
+    deleteTask
+  }
+)
+
+    
+}
 
 
 
+const updateTask = async(req,res)=>{
+    const id = req.params.taskid
 
+    const {title,description} = req.body
 
-
+    if(!title || !description){
+        return res.status(404).json({
+            success:false,
+            message:"Requried fields are required"
+        })
     }
 
+     if(!id){
+       return res.status(404).json({ 
+        success:false,
+        message:"Project Id not found for this task"
+    })
+
+ }
+ const updateTask = await Task.findByIdAndUpdate(
+    id,
+    {
+        title,
+        description
+    },
+    {
+        returnDocument:"after"
+    }
+)
+    res.status(200).json({
+        success:true,
+        message:"Task Updated successfully",
+        updateTask
+    })
 
 
+}
+
+
+
+
+const updateTaskStatus = async (req ,res) => {
+    const {status} = req.body
+    const id = req.params.id
+
+    if(!id){
+        return res.status(404).json({
+            success : false,
+            message : "Task Id not found for task!"
+        })
+    }
+
+    const task = await Task.findById(id)
+
+    if(!task){
+        return res.status(404).json({
+            success : false,
+            message : "task not found!"
+        })
+    }
+
+    task.status = status
+
+    await task.save()
+
+    res.status(200).json({
+        success : true,
+        message : "Task Updated Successfully!",
+        data : {
+            task
+        }
+    })
+}
 
 
 
 
 export {
-    createTask
+    createTask,
+    getTaskByProject,
+    deleteTask,
+    updateTask,
+    updateTaskStatus
 }

@@ -163,9 +163,43 @@ const getSubTask = async(req,res)=>{
   })
 }
 
+const updateSubTaskStatus = async (req ,res) => {
+    const {status} = req.body
+    const id = req.params.subTaskid
+
+    if(!id){
+        return res.status(404).json({
+            success : false,
+            message : "Task Id not found for task!"
+        })
+    }
+
+    const subtask = await subTaskModel.findById(id)
+
+    if(!subtask){
+        return res.status(404).json({
+            success : false,
+            message : "task not found!"
+        })
+    }
+
+    subtask.status = status
+
+    await subtask.save()
+
+    res.status(200).json({
+        success : true,
+        message : "Task Updated Successfully!",
+        data : {
+            subtask
+        }
+    })
+}
+
 export {
     createSubTask,
     deleteSubTask,
     updateSubTask,
-    getSubTask
+    getSubTask,
+    updateSubTaskStatus
 }
